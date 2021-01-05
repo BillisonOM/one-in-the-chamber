@@ -54,7 +54,7 @@ public class Shooter {
         Arrow arrow = player.shootArrow();
         arrow.setVelocity(player.getLocation().getDirection().multiply(5));
         arrow.setTicksLived(20);
-        player.getWorld().playSound(player.getLocation(), Sound.CHICKEN_EGG_POP, 3, 3);
+        player.getWorld().playSound(player.getLocation(), Sound.EXPLODE, 3, 3);
         Bukkit.getPlayer(uuid).getInventory().setItem(0, OITCGamemode.getGamemode().getGunItem(this));
     }
 
