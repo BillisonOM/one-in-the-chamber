@@ -11,30 +11,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.jefferies.gamelibs.utils.chat.Format.translate;
+
 public class Shooter {
 
     @Getter
     private static Map<UUID, Shooter> shooters = new HashMap();
 
     private UUID uuid;
-    private boolean hasBulletInChamber;
+    private int bulletsInChamber;
     private String name;
     private int kills;
 
     public Shooter(Player player) {
         uuid = player.getUniqueId();
         name = player.getName();
-        hasBulletInChamber = true;
+        bulletsInChamber = 4;
         shooters.put(uuid, this);
         kills = 0;
     }
 
     public void kill() {
         kills++;
-        if (!hasBulletInChamber) {
-            hasBulletInChamber = true;
-            Bukkit.getPlayer(uuid).getInventory().setItem(0, OITCGamemode.getGamemode().getGunItem(this));
-        }
+        bulletsInChamber++;
+        Bukkit.getPlayer(uuid).getInventory().setItem(0, OITCGamemode.getGamemode().getGunItem(this));
     }
 
     public int getKills() {
@@ -42,7 +42,7 @@ public class Shooter {
     }
 
     public boolean hasBulletInChamber() {
-        return hasBulletInChamber;
+        return bulletsInChamber >= 1;
     }
 
     public String getName() {
@@ -50,15 +50,22 @@ public class Shooter {
     }
 
     public void shoot(Player player) {
-        hasBulletInChamber = false;
+        bulletsInChamber -= 1;
         Arrow arrow = player.shootArrow();
-        arrow.setVelocity(player.getLocation().getDirection().multiply(5));
+        arrow.setVelocity(player.getLocation().getDirection().multiply(10));
         arrow.setTicksLived(20);
+        arrow.setCustomNameVisible(true);
+        arrow.setCustomName(translate("&cHarpoon"));
+        arrow.setBounce(false);
         player.getWorld().playSound(player.getLocation(), Sound.EXPLODE, 3, 3);
         Bukkit.getPlayer(uuid).getInventory().setItem(0, OITCGamemode.getGamemode().getGunItem(this));
     }
 
     public void resetChamber() {
-        hasBulletInChamber = true;
+        bulletsInChamber = 4;
+    }
+
+    public int getBullets(){
+        return bulletsInChamber;
     }
 }

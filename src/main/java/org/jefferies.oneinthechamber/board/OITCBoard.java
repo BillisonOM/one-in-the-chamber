@@ -2,9 +2,9 @@ package org.jefferies.oneinthechamber.board;
 
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.jefferies.gamelibs.utils.board.GBoardAdapter;
 import org.jefferies.oneinthechamber.OITCGamemode;
-import org.jefferies.oneinthechamber.menu.ScoreboardMenu;
 import org.jefferies.oneinthechamber.shooter.Shooter;
 import org.jefferies.oneinthechamber.states.ActiveState;
 import org.jefferies.oneinthechamber.states.WinnerState;
@@ -34,10 +34,12 @@ public class OITCBoard extends GBoardAdapter {
             if (Shooter.getShooters().values().isEmpty()) {
                 lines.add("&cNo shooters online!");
             } else {
-                lines.add("&eTime&7: &f" + state.getTimeElapsed());
-                lines.add("&eKills&7: &f" + Shooter.getShooters().get(player.getUniqueId()).getKills());
+                lines.add("&eYour Kills&7: &f" + Shooter.getShooters().get(player.getUniqueId()).getKills());
+                lines.add("&eYour Position&7: &f" + getScoreboardPlacement(Shooter.getShooters().get(player.getUniqueId())));
                 lines.add("");
                 lines.add("&eOnline Shooters&7: &f" + gamemode.getServer().getOnlinePlayers().stream().collect(Collectors.toList()).size());
+                lines.add("");
+                lines.add("&f&o" + state.getTimeElapsed());
             }
         } else if (gamemode.getState() instanceof WinnerState) {
             WinnerState state = (WinnerState) gamemode.getState();

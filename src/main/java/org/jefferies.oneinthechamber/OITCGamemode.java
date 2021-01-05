@@ -45,11 +45,19 @@ public class OITCGamemode extends JavaPlugin {
     }
 
     public ItemStack getGunItem(Shooter shooter) {
-        ItemStack stack = new ItemBuilder(Material.IRON_HOE, shooter.hasBulletInChamber() ? "&7Harpoon" : "&7Harpoon &8(&cEmpty&8)").buildItem();
+        ItemStack stack = new ItemBuilder(Material.IRON_HOE, shooter.hasBulletInChamber() ? "&7Harpoon" : "&7Harpoon &8(&cEmpty&8)").addLoreLine(shooter.hasBulletInChamber() ? "&a" + shooter.getBullets() + " rounds left." : "&cNo rounds left.").buildItem();
         if (!shooter.hasBulletInChamber()) {
             stack.setDurability((short) 249);
         } else {
-            stack.setDurability((short) 0);
+            if (shooter.getBullets() == 1) {
+                stack.setDurability((short) 185);
+            } else if (shooter.getBullets() == 2) {
+                stack.setDurability((short) 125);
+            } else if (shooter.getBullets() == 3) {
+                stack.setDurability((short) 60);
+            } else if (shooter.getBullets() >= 4) {
+                stack.setDurability((short) 0);
+            }
         }
         return stack;
     }

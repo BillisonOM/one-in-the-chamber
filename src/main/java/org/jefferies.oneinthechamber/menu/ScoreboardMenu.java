@@ -50,13 +50,12 @@ public class ScoreboardMenu extends PaginatedMenu {
         private Shooter shooter;
         @Override
         public ItemStack getButtonItem(Player player) {
-            ItemBuilder builder = new ItemBuilder(Material.SKULL_ITEM, "&e" + shooter.getName()).setHeadOwner(shooter.getName());
+            ItemBuilder builder = new ItemBuilder(Material.SKULL_ITEM, "&8#" + placement +  " &e" + shooter.getName()).setHeadOwner(shooter.getName());
             if(shooter.getName().equalsIgnoreCase(open.getName())){
                 builder.addFlag(ItemFlag.HIDE_ENCHANTS);
                 builder.addEnchantment(Enchantment.DURABILITY, 1);
             }
-            builder.addLoreLine("&ePlacement &8\u00BB &f" + placement);
-            builder.addLoreLine("&eKills &8\u00BB &f" + shooter.getKills());
+            builder.addLoreLine("&fKills &8\u00BB &e" + shooter.getKills());
             return builder.buildItem();
         }
     }

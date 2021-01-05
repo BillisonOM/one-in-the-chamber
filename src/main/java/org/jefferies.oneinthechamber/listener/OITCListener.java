@@ -7,6 +7,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -44,6 +45,11 @@ public class OITCListener extends GListener {
         event.getPlayer().getInventory().setItem(0, gamemode.getGunItem(shooter));
         event.getPlayer().getInventory().setItem(8, new ItemBuilder(Material.PAPER, "&eScoreboard").buildItem());
         event.getPlayer().teleport(gamemode.getSpawnLocation());
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent event){
+        event.setCancelled(true);
     }
 
     @EventHandler
