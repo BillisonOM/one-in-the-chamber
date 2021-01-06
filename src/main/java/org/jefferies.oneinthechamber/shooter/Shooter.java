@@ -26,7 +26,7 @@ public class Shooter {
     public Shooter(Player player) {
         uuid = player.getUniqueId();
         name = player.getName();
-        bulletsInChamber = 4;
+        bulletsInChamber = 6;
         shooters.put(uuid, this);
         kills = 0;
     }
@@ -54,18 +54,22 @@ public class Shooter {
         Arrow arrow = player.shootArrow();
         arrow.setVelocity(player.getLocation().getDirection().multiply(10));
         arrow.setTicksLived(20);
-        arrow.setCustomNameVisible(true);
-        arrow.setCustomName(translate("&cHarpoon"));
         arrow.setBounce(false);
         player.getWorld().playSound(player.getLocation(), Sound.EXPLODE, 3, 3);
         Bukkit.getPlayer(uuid).getInventory().setItem(0, OITCGamemode.getGamemode().getGunItem(this));
     }
 
     public void resetChamber() {
-        bulletsInChamber = 4;
+        bulletsInChamber = 6;
     }
 
     public int getBullets(){
         return bulletsInChamber;
     }
+
+    public void giveBullet(){
+        bulletsInChamber++;
+        Bukkit.getPlayer(uuid).getInventory().setItem(0, OITCGamemode.getGamemode().getGunItem(this));
+    }
+
 }

@@ -45,17 +45,21 @@ public class OITCGamemode extends JavaPlugin {
     }
 
     public ItemStack getGunItem(Shooter shooter) {
-        ItemStack stack = new ItemBuilder(Material.IRON_HOE, shooter.hasBulletInChamber() ? "&7Harpoon" : "&7Harpoon &8(&cEmpty&8)").addLoreLine(shooter.hasBulletInChamber() ? "&a" + shooter.getBullets() + " rounds left." : "&cNo rounds left.").buildItem();
+        ItemStack stack = new ItemBuilder(Material.IRON_HOE, shooter.hasBulletInChamber() ? "&7Harpoon &8(&e" + shooter.getBullets() + " left&8)" : "&7Harpoon &8(&cEmpty&8)").addLoreLine(shooter.hasBulletInChamber() ? "&a" + shooter.getBullets() + " rounds left." : "&cNo rounds left.").buildItem();
         if (!shooter.hasBulletInChamber()) {
             stack.setDurability((short) 249);
         } else {
             if (shooter.getBullets() == 1) {
-                stack.setDurability((short) 185);
+                stack.setDurability((short) 210);
             } else if (shooter.getBullets() == 2) {
-                stack.setDurability((short) 125);
+                stack.setDurability((short) 170);
             } else if (shooter.getBullets() == 3) {
-                stack.setDurability((short) 60);
-            } else if (shooter.getBullets() >= 4) {
+                stack.setDurability((short) 130);
+            } else if (shooter.getBullets() == 4) {
+                stack.setDurability((short) 90);
+            } else if(shooter.getBullets() == 5){
+                stack.setDurability((short) 50);
+            } else {
                 stack.setDurability((short) 0);
             }
         }

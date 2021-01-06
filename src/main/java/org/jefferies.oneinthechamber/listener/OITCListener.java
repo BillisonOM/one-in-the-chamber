@@ -4,17 +4,22 @@ import lombok.AllArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jefferies.gamelibs.utils.item.ItemBuilder;
 import org.jefferies.gamelibs.utils.listener.GListener;
 import org.jefferies.oneinthechamber.OITCGamemode;
@@ -43,12 +48,14 @@ public class OITCListener extends GListener {
         event.getPlayer().getInventory().setArmorContents(new ItemStack[4]);
         event.getPlayer().getInventory().setContents(new ItemStack[36]);
         event.getPlayer().getInventory().setItem(0, gamemode.getGunItem(shooter));
+        event.getPlayer().getInventory().setItem(1, new ItemBuilder(Material.COMPASS, "&eCompass").buildItem());
         event.getPlayer().getInventory().setItem(8, new ItemBuilder(Material.PAPER, "&eScoreboard").buildItem());
         event.getPlayer().teleport(gamemode.getSpawnLocation());
+        event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent event){
+    public void onBreak(BlockBreakEvent event) {
         event.setCancelled(true);
     }
 
@@ -73,7 +80,7 @@ public class OITCListener extends GListener {
 
     @EventHandler
     public void onShoot(PlayerInteractEvent event) {
-        if(gamemode.getState() instanceof WinnerState) return;
+        if (gamemode.getState() instanceof WinnerState) return;
         if (event.getItem() == null) return;
         if (event.getItem().getType() != Material.IRON_HOE) return;
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -94,8 +101,15 @@ public class OITCListener extends GListener {
     }
 
     @EventHandler
+    public void onDamaged(EntityDamageEvent event) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onAttacked(EntityDamageByEntityEvent event) {
-        if(gamemode.getState() instanceof ActiveState) {
+        if (gamemode.getState() instanceof ActiveState) {
             if (event.getEntity() instanceof Player) {
                 if (event.getDamager() instanceof Player) {
                     Player damager = (Player) event.getDamager();
@@ -140,7 +154,14 @@ public class OITCListener extends GListener {
 
     @EventHandler
     public void onPickup(PlayerPickupItemEvent event) {
-        event.setCancelled(true);
+        if (event.getItem().getType() != EntityType.ARROW) {
+            Item i = event.getItem();
+            i.remove();
+            Shooter.getShooters().get(event.getPlayer().getUniqueId()).giveBullet();
+            event.setCancelled(true);
+        } else {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -154,7 +175,9 @@ public class OITCListener extends GListener {
         event.getPlayer().getInventory().setArmorContents(new ItemStack[4]);
         event.getPlayer().getInventory().setContents(new ItemStack[36]);
         event.getPlayer().getInventory().setItem(0, gamemode.getGunItem(Shooter.getShooters().get(event.getPlayer().getUniqueId())));
+        event.getPlayer().getInventory().setItem(1, new ItemBuilder(Material.COMPASS, "&eCompass").buildItem());
         event.getPlayer().getInventory().setItem(8, new ItemBuilder(Material.PAPER, "&eScoreboard").buildItem());
+        event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
     }
 
     @EventHandler
